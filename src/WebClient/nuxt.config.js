@@ -3,8 +3,11 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - web-client',
-    title: 'web-client',
+    titleTemplate: '%s - Plantalio - For all plant lovers',
+    title: 'Plantalio - For all plant lovers',
+    htmlAttrs: {
+      lang: 'en'
+    },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -51,6 +54,22 @@ export default {
     baseURL: '/'
   },
 
+  router: {
+    middleware: ['auth']
+  },
+
+  publicRuntimeConfig: {
+    baseUrl: process.env.BASE_URL || 'http://localhost:3000'
+  },
+
+  auth: {
+    strategies: {
+      local: {
+        scheme: '~/schemes/SignalrScheme',
+      },
+    },
+  },
+
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
     manifest: {
@@ -82,5 +101,8 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    transpile: [
+      'vuex-module-decorators'
+    ]
   }
 }
