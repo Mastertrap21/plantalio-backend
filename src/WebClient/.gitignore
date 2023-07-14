@@ -7,6 +7,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Only keep yarn.lock in the root
+package-lock.json
+*/**/yarn.lock
+composer.lock
+
 # Runtime data
 pids
 *.pid
@@ -34,9 +39,47 @@ bower_components
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
+# Packages
+packages/*/LICENSE
+
+# VSCode
+.vscode
+
+# Intellij idea
+*.iml
+.idea
+
+# Zend \ Eclipse
+/.settings/
+/.buildpath
+/.project
+
+# OSX
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+CHANGELOG.md
+
 # Dependency directories
 node_modules/
 jspm_packages/
+vendor
 
 # TypeScript v1 declaration files
 typings/
@@ -77,14 +120,8 @@ dist
 # Serverless directories
 .serverless
 
-# IDE / Editor
-.idea
-
 # Service worker
 sw.*
-
-# macOS
-.DS_Store
 
 # Vim swap files
 *.swp

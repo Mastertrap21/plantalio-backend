@@ -17,6 +17,23 @@ $ yarn start
 $ yarn generate
 ```
 
+## Production
+```shell
+# build for production and launch server
+$ npm run build
+$ npm start
+
+# or generate static project
+# npm run generate
+```
+
+## Docker
+```shell
+$ docker build -t nuxt_dashboard .
+$ docker run -it -e HOST=0.0.0.0 -p 3000:3000 nuxt_dashboard
+```
+Open http://`docker-machine ip`:3000
+
 For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
 
 ## Special Directories

@@ -7,4 +7,8 @@
         <RootNamespace>Web</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="components\" />
+    </ItemGroup>
+
 </Project>

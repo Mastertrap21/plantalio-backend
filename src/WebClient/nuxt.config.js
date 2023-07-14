@@ -4,10 +4,10 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - Plantalio - For all plant lovers',
-    title: 'Plantalio - For all plant lovers',
-    htmlAttrs: {
-      lang: 'en'
-    },
+    title: '',
+    // htmlAttrs: {
+    //   lang: 'en'
+    // },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -15,16 +15,27 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons',
+      },
+    ],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    '~/assets/less/main.less'
   ],
 
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~/plugins/public.client',
+    '~/plugins/protected.client',
+    '~/plugins/vuetify.js',
+    '~/plugins/base.js',
+    '~/plugins/chartist.js',
+    '~/plugins/components.js',
+    { src: '~/plugins/ckeditor.js', mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -32,6 +43,8 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
+    // Doc: https://github.com/nuxt-community/eslint-module
+    ['@nuxtjs/eslint-module', { fix: true }],
     // https://go.nuxtjs.dev/typescript
     '@nuxt/typescript-build',
     // https://go.nuxtjs.dev/vuetify
@@ -48,14 +61,20 @@ export default {
     '@nuxt/content'
   ],
 
+  /*
+   ** Customize the progress bar color
+   */
+  loading: { color: '#3B8070' },
+
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: '/'
+    // proxyHeaders: false
   },
 
   router: {
-    middleware: ['auth']
+    //middleware: ['auth']
   },
 
   publicRuntimeConfig: {
@@ -80,28 +99,40 @@ export default {
   // Content module configuration: https://go.nuxtjs.dev/config-content
   content: {},
 
-  // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
-  vuetify: {
-    customVariables: ['~/assets/variables.scss'],
-    theme: {
-      dark: true,
-      themes: {
-        dark: {
-          primary: colors.blue.darken2,
-          accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3
-        }
-      }
-    }
-  },
-
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    extractCSS: true,
+    optimization: {
+      splitChunks: {
+        cacheGroups: {
+          styles: {
+            name: 'styles',
+            test: /\.(css|vue)$/,
+            chunks: 'all',
+            enforce: true,
+          },
+        },
+      },
+    },
+    extend(config, ctx) {
+      // Run ESLint on save
+      if (ctx.isDev && ctx.isClient) {
+        config.module.rules.push({
+          enforce: 'pre',
+          test: /\.(js|vue)$/,
+          loader: 'eslint-loader',
+          exclude: /(node_modules)/,
+          options : {
+            fix : true
+          }
+        });
+      }
+      if (ctx.isClient) {
+        config.devtool = 'source-map';
+      }
+    },
     transpile: [
+      /^vuetify/,
       'vuex-module-decorators'
     ]
   }
