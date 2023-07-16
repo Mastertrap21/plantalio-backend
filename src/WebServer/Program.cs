@@ -1,3 +1,5 @@
+using WebServer.Hub;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,12 +9,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
+builder.Services.AddMvc();
+builder.Services.AddSignalR(hubOptions =>
+{
+    hubOptions.EnableDetailedErrors = true;
+    hubOptions.MaximumParallelInvocationsPerClient = int.MaxValue;
+});
 
 var app = builder.Build();
 
 app.UseCors(appBuilder =>
     appBuilder
-        .WithOrigins("http://localhost:8080")
+        .WithOrigins("http://localhost:8080", "http://localhost:3000")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()
@@ -25,9 +33,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+
+app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseEndpoints(appBuilder => { appBuilder.MapHub<PlantGuestHub>("/signalr/guest"); });
+app.UseEndpoints(appBuilder => { appBuilder.MapHub<AuthenticatedHub>("/signalr/authenticated"); });
 
 app.MapControllers();
 
