@@ -82,5 +82,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+    created() {
+        this.$guestHub.plantOpened(42);
+    },
+};
 </script>

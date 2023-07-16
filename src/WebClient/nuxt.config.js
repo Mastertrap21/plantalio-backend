@@ -29,8 +29,7 @@ export default {
   ],
 
   plugins: [
-    '~/plugins/public.client',
-    '~/plugins/protected.client',
+    '~/plugins/guest.hub.js',
     '~/plugins/vuetify.js',
     '~/plugins/base.js',
     '~/plugins/chartist.js',
