@@ -71,9 +71,14 @@ export default {
                 text: 'Dashboard',
             },
             {
-                to: '/user-profile',
-                icon: 'mdi-account',
-                text: 'User Profile',
+                to: '/plants',
+                icon: 'mdi-flower',
+                text: 'Plants',
+            },
+            {
+                to: '/plant',
+                icon: 'mdi-flower',
+                text: 'Plant',
             },
             {
                 to: '/table-list',
