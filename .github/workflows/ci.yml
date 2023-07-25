@@ -21,4 +21,5 @@ jobs:
       - name: Publish coverage report to coveralls.io   
         uses: coverallsapp/github-action@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }} 
+          files: src/TestCore/TestResults/coverage.info, src/WebServerTest/TestResults/coverage.info
