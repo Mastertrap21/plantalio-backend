@@ -22,4 +22,4 @@ jobs:
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }} 
-          files: src/TestCore/TestResults/coverage.info, src/WebServerTest/TestResults/coverage.info
+          files: src/TestCore/TestResults/coverage.info src/WebServerTest/TestResults/coverage.info
