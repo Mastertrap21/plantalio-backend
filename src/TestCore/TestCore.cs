@@ -5,7 +5,7 @@ namespace TestCore;
 public class TestCore
 {
     [SetUp]
-    public void Setup()
+    public void SetupCore()
     {
     }
 }
