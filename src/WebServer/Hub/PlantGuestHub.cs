@@ -5,17 +5,19 @@ using Microsoft.Extensions.Logging;
 namespace WebServer.Hub
 {
     
-    public class PlantGuestHub : GuestHub
+    public class PlantGuestHub : GuestHub, IPlantGuestHub
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<IPlantGuestHub> _logger;
         public PlantGuestHub(ILogger<PlantGuestHub> logger)
         {
-            this._logger = logger;
+            _logger = logger;
         }
         
-        public async Task<Model.Plant> GetPlant(Guid plantId)
+        public async Task<Model.IPlant> GetPlant(Guid plantId)
         {
-            this._logger.LogInformation("Client {ContextConnectionId} is viewing {PlantId}", Context.ConnectionId, plantId);
+            // TODO: do actual async
+            await Task.Run(() => { });
+            _logger.LogInformation("Client {ContextConnectionId} is viewing {PlantId}", Context.ConnectionId, plantId);
             return new Model.Plant()
             {
                 Id = Guid.Parse("b00c58c0-df00-49ac-ae85-0a135f75e01b"),

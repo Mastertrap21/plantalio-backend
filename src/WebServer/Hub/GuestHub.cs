@@ -1,7 +1,7 @@
 namespace WebServer.Hub
 {
     
-    public class GuestHub : HubBase
+    public class GuestHub : HubBase, IGuestHub
     {
         
     }

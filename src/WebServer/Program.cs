@@ -42,8 +42,8 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.UseEndpoints(appBuilder => { appBuilder.MapHub<PlantGuestHub>("/signalr/guest"); });
-app.UseEndpoints(appBuilder => { appBuilder.MapHub<AuthenticatedHub>("/signalr/authenticated"); });
+app.MapHub<PlantGuestHub>("/signalr/guest");
+app.MapHub<AuthenticatedHub>("/signalr/authenticated");
 
 app.MapControllers();
 

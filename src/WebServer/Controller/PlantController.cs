@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using WebServer.Model;
@@ -9,9 +9,10 @@ namespace WebServer.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
-public class PlantController : ControllerBase
+public class PlantController : ControllerBase, IPlantController
 {
-    private static ConcurrentBag<Plant> _plants = new ConcurrentBag<Plant> {
+    private static readonly ConcurrentBag<IPlant> Plants = new()
+    {
         new Plant {
             Id = Guid.Parse("b00c58c0-df00-49ac-ae85-0a135f75e01b"),
             Name = "Name",
@@ -19,27 +20,26 @@ public class PlantController : ControllerBase
         }
     };
     [HttpGet()]
-    public IEnumerable GetPlants()
+    public IEnumerable<IPlant> GetPlants()
     {
-        return _plants.Select(p => new {
+        return Plants.Select<IPlant, IPlant>(p => new Plant {
             Id = p.Id,
             Name = p.Name,
             Species = p.Species
         });
     }
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public ActionResult GetPlant(Guid id)
     {
-        var plant = _plants.SingleOrDefault(t => t.Id == id);
+        IPlant? plant = Plants.SingleOrDefault(t => t.Id == id);
         if (plant == null) return NotFound();
- 
         return new JsonResult(plant);
     }
     [HttpPost()]
-    public ActionResult AddPlant([FromBody]Plant plant)
+    public ActionResult AddPlant([FromBody]IPlant plant)
     {
         plant.Id = Guid.NewGuid();
-        _plants.Add(plant);
+        Plants.Add(plant);
         return new JsonResult(plant);
     }
 }

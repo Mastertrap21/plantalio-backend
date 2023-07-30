@@ -1,7 +1,7 @@
 namespace WebServer.Hub
 {
     
-    public class AuthenticatedHub : HubBase
+    public class AuthenticatedHub : HubBase, IAuthenticatedHub
     {
         
     }
