@@ -35,7 +35,7 @@ public abstract class ProgramBase<T> : IProgramBase where T : ServiceMetadata.Se
 
             var version = typeof(IProgramBase).Assembly.GetName().Version ?? new Version();
             Logger.LogInformation("Running on core version: {Version}", string.Join('.', version.Major, version.Minor, version.Build));
-            Logger.LogInformation("Service metadata values: {@Config}", ServiceMetadata.GetAll());
+            Logger.LogInformation("Service metadata values: {@Metadata}", ServiceMetadata.GetAll());
             _serviceProvider.RaiseStartedEvent();
         }
     }
