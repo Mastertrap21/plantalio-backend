@@ -72,7 +72,7 @@ public abstract class ProgramBase<T> : IProgramBase where T : ServiceMetadata.Se
     }
 
     protected static void Boot<TServiceBuilder>()
-        where TServiceBuilder : IServiceBuilder, new()
+        where TServiceBuilder : IServiceBuilderBase, new()
     {
         new TServiceBuilder()
             .Configure()

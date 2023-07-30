@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Core.ServiceMetadata;
 
-public abstract class ServiceMetadataBase
+public abstract class ServiceMetadataBase : IServiceMetadataBase
 {
     private readonly Dictionary<string, object?> _metadata = new();
     

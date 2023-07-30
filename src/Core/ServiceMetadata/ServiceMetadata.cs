@@ -5,7 +5,7 @@ using Core.ServiceMetadata.Common;
 
 namespace Core.ServiceMetadata;
 
-public class ServiceMetadata : ServiceMetadataBase
+public class ServiceMetadata : ServiceMetadataBase, IServiceMetadata
 {
     public readonly Database Database = new();
     public Dictionary<string, object?> GetAll()

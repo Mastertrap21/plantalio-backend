@@ -2,8 +2,8 @@ using System.Collections.Generic;
 
 namespace Core.Model;
 
-public class PayloadData : Dictionary<string, object>
-    {
+public class PayloadData : Dictionary<string, object>, IPayloadData
+{
         public PayloadData? Parent { get; }
         
         public PayloadData()

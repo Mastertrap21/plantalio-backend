@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Core.ServiceMetadata.Common;
 
-public class Database : ServiceMetadataBase
+public class Database : ServiceMetadataBase, IDatabase
 {
     public string Dsn {
         get

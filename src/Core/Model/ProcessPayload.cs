@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Core.Model;
 
-public class ProcessPayload
+public class ProcessPayload : IProcessPayload
 {
     public Guid Id { get; set; } 
     public List<Guid>? ParentIds { get; set; } 

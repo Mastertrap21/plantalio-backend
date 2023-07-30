@@ -9,7 +9,7 @@ namespace Core.ProgramBase;
 public class FunctionProgramBase : FunctionProgramBase<ServiceMetadata.ServiceMetadata>
 {
 }
-public class FunctionProgramBase<T> : ProgramBase<T> where T : ServiceMetadata.ServiceMetadata, new()
+public class FunctionProgramBase<T> : ProgramBase<T>, IFunctionProgramBase where T : ServiceMetadata.ServiceMetadata, new()
 {
     private IFunctionService? _service;
 

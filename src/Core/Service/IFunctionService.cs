@@ -11,5 +11,6 @@ public interface IFunctionService
         
     void Register<T>(Action<T> action) where T : FunctionPayload;
     void RegisterAnyHandler(Action<AnyFunctionPayload> action);
-        
+    void StartSubscriber(string? service);
+
 }

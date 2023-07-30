@@ -5,13 +5,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Core.Service;
 
-public class ServiceBuilder<TProgram> : ServiceBuilderBase<TProgram>
-    where TProgram : IProgramBase, new()
+public class ServiceBuilder<TProgram> : ServiceBuilderBaseBase<TProgram>, IServiceBuilder where TProgram : IProgramBase, new()
 {
     private readonly IHostBuilder _builder = Host.CreateDefaultBuilder();
     private IHost _host = default!;
 
-    public override IServiceBuilder Configure()
+    public override IServiceBuilderBase Configure()
     {
         _builder
             .ConfigureServices(Program.ConfigureServices)
@@ -19,7 +18,7 @@ public class ServiceBuilder<TProgram> : ServiceBuilderBase<TProgram>
         return this;
     }
 
-    public override IServiceBuilder Build()
+    public override IServiceBuilderBase Build()
     {
         _host = _builder.Build();
         return this;

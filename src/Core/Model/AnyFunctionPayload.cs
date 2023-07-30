@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Core.Model;
 
-public class AnyFunctionPayload : FunctionPayload
+public class AnyFunctionPayload : FunctionPayload, IAnyFunctionPayload
 {
     public string? Json { get; }
 

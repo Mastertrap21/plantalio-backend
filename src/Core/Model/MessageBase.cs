@@ -1,6 +1,6 @@
 namespace Core.Model;
 
-public abstract class MessageBase
+public abstract class MessageBase : IMessageBase
 {
     
 }
