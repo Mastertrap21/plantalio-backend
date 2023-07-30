@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace UserService;
 
-public class UserServiceContextFactory : IDesignTimeDbContextFactory<UserServiceContext>
+public class UserServiceContextFactory : IUserServiceContextFactory
 {
     public UserServiceContext CreateDbContext(string[] args)
     {

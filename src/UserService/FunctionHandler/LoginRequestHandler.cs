@@ -8,7 +8,7 @@ using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace UserService.FunctionHandler;
 
-internal class LoginRequestHandler : Core.Handler.FunctionHandler
+internal class LoginRequestHandler : Core.Handler.FunctionHandler, ILoginRequestHandler
 {
     private readonly IProducer _producer;
     private readonly IDbContextFactory<UserServiceContext> _contextFactory;

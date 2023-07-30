@@ -3,7 +3,7 @@ using UserService.Entity;
 
 namespace UserService;
 
-public class UserServiceContext : DbContext
+public class UserServiceContext : DbContext, IUserServiceContext
 {
     public DbSet<UserEntity>? Users { get; set; }
 

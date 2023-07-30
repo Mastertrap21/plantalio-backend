@@ -1,6 +1,6 @@
 namespace UserService.Entity;
 
-public class UserEntity
+public class UserEntity : IUserEntity
 {
     public Guid UserId { get; set; }
     public string? Username { get; set; }
