@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
-        <AssemblyName>PlantalioBase</AssemblyName>
+        <AssemblyName>Core</AssemblyName>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 	
