@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServerTest", "src\WebSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService", "src\UserService\UserService.csproj", "{2AA732C2-8EAA-4EB1-9F84-E26BABF5D75A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantService", "src\PlantService\PlantService.csproj", "{FE5784A1-117E-412C-8895-03E0D57880E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{2AA732C2-8EAA-4EB1-9F84-E26BABF5D75A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AA732C2-8EAA-4EB1-9F84-E26BABF5D75A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2AA732C2-8EAA-4EB1-9F84-E26BABF5D75A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE5784A1-117E-412C-8895-03E0D57880E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE5784A1-117E-412C-8895-03E0D57880E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE5784A1-117E-412C-8895-03E0D57880E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE5784A1-117E-412C-8895-03E0D57880E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
