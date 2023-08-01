@@ -20,10 +20,10 @@ internal class GetPlantRequestHandler : Core.Handler.FunctionHandler, IGetPlantR
 
     public override void RegisterFuncListeners(IFunctionService? service)
     {
-        service?.Register<GetPlantRequest>(GetPlantRequest);
+        service?.Register<GetPlantRequest>(GetPlant);
     }
 
-    private void GetPlantRequest(GetPlantRequest request)
+    public void GetPlant(IGetPlantRequest request)
     {
         var plantId = request.PlantId;
         var response = new GetPlantResponse();
