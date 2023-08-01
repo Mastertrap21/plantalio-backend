@@ -10,7 +10,7 @@ public interface IFunctionService
     void Stop();
         
     void Register<T>(Action<T> action) where T : FunctionPayload;
-    void RegisterAnyHandler(Action<AnyFunctionPayload> action);
+    void RegisterAnyHandler(Action<IAnyFunctionPayload> action);
     void StartSubscriber(string? service);
 
 }

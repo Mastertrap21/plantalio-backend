@@ -109,7 +109,7 @@ public class FunctionService : IFunctionService
             }
         }
 
-        public void RegisterAnyHandler(Action<AnyFunctionPayload> action)
+        public void RegisterAnyHandler(Action<IAnyFunctionPayload> action)
         {
             if (_listeners.ContainsKey(AnyFunction))
             {
