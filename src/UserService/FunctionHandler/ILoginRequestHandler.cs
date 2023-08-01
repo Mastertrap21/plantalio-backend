@@ -1,5 +1,7 @@
+using Core.Handler;
+
 namespace UserService.FunctionHandler;
 
-internal interface ILoginRequestHandler
+internal interface ILoginRequestHandler : IFunctionHandler
 {
 }

@@ -21,10 +21,10 @@ internal class LoginRequestHandler : Core.Handler.FunctionHandler, ILoginRequest
 
     public override void RegisterFuncListeners(IFunctionService? service)
     {
-        service?.Register<LoginRequest>(LoginRequest);
+        service?.Register<LoginRequest>(Login);
     }
 
-    private void LoginRequest(LoginRequest request)
+    private void Login(ILoginRequest request)
     {
         var username = request.Username?.Trim();
         var response = new LoginResponse();

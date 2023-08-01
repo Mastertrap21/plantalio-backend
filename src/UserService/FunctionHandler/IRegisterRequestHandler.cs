@@ -1,5 +1,7 @@
+using Core.Handler;
+
 namespace UserService.FunctionHandler;
 
-internal interface IRegisterRequestHandler
+internal interface IRegisterRequestHandler : IFunctionHandler
 {
 }

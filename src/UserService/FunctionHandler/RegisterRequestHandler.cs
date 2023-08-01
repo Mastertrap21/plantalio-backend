@@ -21,10 +21,10 @@ internal class RegisterRequestHandler : Core.Handler.FunctionHandler, IRegisterR
 
     public override void RegisterFuncListeners(IFunctionService? service)
     {
-        service?.Register<RegisterRequest>(RegisterRequest);
+        service?.Register<RegisterRequest>(Register);
     }
 
-    private void RegisterRequest(RegisterRequest request)
+    private void Register(IRegisterRequest request)
     {
         var username = request.Username?.Trim();
         var response = new RegisterResponse();
