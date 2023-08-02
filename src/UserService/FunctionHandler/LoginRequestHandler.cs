@@ -24,7 +24,7 @@ internal class LoginRequestHandler : Core.Handler.FunctionHandler, ILoginRequest
         service?.Register<LoginRequest>(Login);
     }
 
-    private void Login(ILoginRequest request)
+    public void Login(ILoginRequest request)
     {
         var username = request.Username?.Trim();
         var response = new LoginResponse();

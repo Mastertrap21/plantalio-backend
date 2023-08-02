@@ -24,7 +24,7 @@ internal class RegisterRequestHandler : Core.Handler.FunctionHandler, IRegisterR
         service?.Register<RegisterRequest>(Register);
     }
 
-    private void Register(IRegisterRequest request)
+    public void Register(IRegisterRequest request)
     {
         var username = request.Username?.Trim();
         var response = new RegisterResponse();
