@@ -59,6 +59,7 @@ public class PlantServiceTest : TestCore.TestCoreTest
         Assert.IsNull(((GetPlantResponse)_lastResponse).Plant?.PlantId);
     }
     
+    [Test]
     public void Test_GetPlant_Found()
     {
         IGetPlantRequest request = new GetPlantRequest { PlantId = new Guid("0f8fad5b-d9cb-469f-a165-70867728950e") };
