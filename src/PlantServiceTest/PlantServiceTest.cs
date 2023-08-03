@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Core.Messaging;
 using Core.Model;
+using Core.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
@@ -50,6 +51,16 @@ public class PlantServiceTest : TestCore.TestCoreTest
     }
     
     [Test]
+    public void Test_RegisterFuncListeners_Exceptions()
+    {
+        ILogger logger = new Mock<ILogger>().Object;
+        IMessageService messageService = new Mock<IMessageService>().Object;
+        FunctionService fs = new FunctionService(logger, messageService);
+        Assert.DoesNotThrow(() => _getPlantRequestHandler.RegisterFuncListeners(fs));
+        Assert.Throws<Exception>(() => _getPlantRequestHandler.RegisterFuncListeners(fs));
+    }
+    
+    [Test]
     public void Test_GetPlant_NotFound()
     {
         IGetPlantRequest request = new GetPlantRequest { PlantId = new Guid() };
@@ -70,4 +81,5 @@ public class PlantServiceTest : TestCore.TestCoreTest
         Assert.IsNotNull(((GetPlantResponse)_lastResponse).Plant?.PlantId);
         Assert.AreEqual(((GetPlantResponse)_lastResponse).Plant?.PlantId, new Guid("0f8fad5b-d9cb-469f-a165-70867728950e"));
     }
+
 }
