@@ -59,6 +59,8 @@ public class UserServiceTest : TestCore.TestCoreTest
         Assert.AreEqual(request, _lastRequest);
         Assert.IsInstanceOf(typeof(LoginResponse), _lastResponse);
         Assert.IsFalse(((LoginResponse)_lastResponse).Success);
+        Assert.IsNotNull(((LoginResponse)_lastResponse).Error);
+        Assert.AreEqual(((LoginResponse)_lastResponse).Error, ErrorCodes.WrongUserOrPassword);
         Assert.IsNull(((LoginResponse)_lastResponse).User?.UserId);
     }
     
@@ -70,6 +72,8 @@ public class UserServiceTest : TestCore.TestCoreTest
         Assert.AreEqual(request, _lastRequest);
         Assert.IsInstanceOf(typeof(LoginResponse), _lastResponse);
         Assert.IsFalse(((LoginResponse)_lastResponse).Success);
+        Assert.IsNotNull(((LoginResponse)_lastResponse).Error);
+        Assert.AreEqual(((LoginResponse)_lastResponse).Error, ErrorCodes.WrongUserOrPassword);
         Assert.IsNull(((LoginResponse)_lastResponse).User?.UserId);
     }
 
@@ -81,6 +85,7 @@ public class UserServiceTest : TestCore.TestCoreTest
         Assert.AreEqual(request, _lastRequest);
         Assert.IsInstanceOf(typeof(LoginResponse), _lastResponse);
         Assert.IsTrue(((LoginResponse)_lastResponse).Success);
+        Assert.IsNull(((LoginResponse)_lastResponse).Error);
         Assert.IsNotNull(((LoginResponse)_lastResponse).User);
         Assert.IsNotNull(((LoginResponse)_lastResponse).User?.UserId);
         Assert.AreEqual(((LoginResponse)_lastResponse).User?.UserId, new Guid("0f8fad5b-d9cb-469f-a165-70867728950e"));
