@@ -50,12 +50,19 @@ internal class LoginRequestHandler : Core.Handler.FunctionHandler, ILoginRequest
                 }
                 else
                 {
+                    response.Error = ErrorCodes.WrongUserOrPassword;
                     Log.LogInformation("Authentication failed for user: {Username}", username);
                 }
+            }
+            else
+            {
+                response.Error = ErrorCodes.WrongUserOrPassword;
+                Log.LogInformation("Authentication failed for user: {Username} as no users exists", username);
             }
         }
         catch (Exception e)
         {
+            response.Error = ErrorCodes.WrongUserOrPassword;
             Log.LogError(e, "Failed to handle login request. Request: {@Request}", request);
         }
 
