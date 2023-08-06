@@ -54,7 +54,7 @@ internal class GetPlantRequestHandler : Core.Handler.FunctionHandler, IGetPlantR
         }
         catch (Exception e)
         {
-            Log.LogError(e, "Failed to handle get plant request. Request: {@Request}", request);
+            Log.LogError(e, LoggingMessageTemplates.GetPlantRequestHandleFailed, request);
         }
 
         _producer.Respond(request, response);

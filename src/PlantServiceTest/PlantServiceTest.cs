@@ -29,7 +29,7 @@ public class PlantServiceTest : TestCore.TestCoreTest
     public void Setup()
     {
         _loggerMock = new Mock<ILogger>();
-        _loggerMock.Setup(l => l.LogError(It.IsAny<Exception>(), "Failed to handle get plant request. Request: {@Request}", It.IsAny<object>())).Verifiable();
+        _loggerMock.Setup(l => l.LogError(It.IsAny<Exception>(), LoggingMessageTemplates.GetPlantRequestHandleFailed, It.IsAny<object>())).Verifiable();
         _logger = _loggerMock.Object;
         var mock = new Mock<IProducer>();
         mock.Setup(p => p.Respond(It.IsAny<IFunctionPayload>(), It.IsAny<IFunctionPayload>()))
