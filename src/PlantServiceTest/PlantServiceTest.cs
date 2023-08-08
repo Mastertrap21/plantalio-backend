@@ -67,6 +67,22 @@ public class PlantServiceTest : TestCore.TestCoreTest
     }
     
     [Test]
+    public void Test_ServiceStartSubscriber_Success()
+    {
+        Mock<IMessageService> messageServiceMock = new Mock<IMessageService>();
+        IMessageService messageService = messageServiceMock.Object;
+        FunctionService fs = new FunctionService(Logger, messageService);
+        _getPlantRequestHandler.RegisterFuncListeners(fs);
+        fs.StartSubscriber(ExecutionContext.Service);
+        messageServiceMock.Verify(
+            ms => ms.Subscribe(
+                It.IsAny<string>(), 
+                It.IsAny<Action<FunctionMessage>>(), 
+                It.IsAny<bool>()),
+            Times.Once());
+    }
+
+    [Test]
     public void Test_GetPlant_NotFound()
     {
         IGetPlantRequest request = new GetPlantRequest { PlantId = new Guid() };
