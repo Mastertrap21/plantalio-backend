@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Core.Messaging;
+using Core;
 using Core.Model;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +48,22 @@ public class PlantServiceTest : TestCore.TestCoreTest
         FunctionService fs = new FunctionService(Logger, messageService);
         Assert.DoesNotThrow(() => _getPlantRequestHandler.RegisterFuncListeners(fs));
         Assert.Throws<Exception>(() => _getPlantRequestHandler.RegisterFuncListeners(fs));
+    }
+    
+    [Test]
+    public void Test_ServiceStart_Success()
+    {
+        Mock<IMessageService> messageServiceMock = new Mock<IMessageService>();
+        IMessageService messageService = messageServiceMock.Object;
+        FunctionService fs = new FunctionService(Logger, messageService);
+        _getPlantRequestHandler.RegisterFuncListeners(fs);
+        fs.Start(ExecutionContext.Service);
+        messageServiceMock.Verify(
+            ms => ms.Subscribe(
+                It.IsAny<string>(), 
+                It.IsAny<Action<FunctionMessage>>(), 
+                It.IsAny<bool>()),
+            Times.Once());
     }
     
     [Test]
