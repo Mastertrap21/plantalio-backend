@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Core;
 using Core.Model;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using PlantService.FunctionHandler;
@@ -39,6 +43,15 @@ public class PlantServiceTest : TestCore.TestCoreTest
     public void Test_AlwaysPass()
     {
         Assert.Pass();
+    }
+    
+    [Test]
+    public void Test_PlantServiceContextOnModelCreating()
+    {
+        DbContextOptionsBuilder<PlantServiceContext> builder = new DbContextOptionsBuilder<PlantServiceContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString());
+        var context = new TestablePlantServiceContext(builder.Options);
+        context.Database.EnsureCreated();
+        var entityType = new EntityType("PlantEntity", typeof(PlantEntity), new Model(), false, ConfigurationSource.Convention);
     }
     
     [Test]
