@@ -6,7 +6,7 @@ namespace PlantService;
 
 public class PlantServiceContext : DbContext, IPlantServiceContext
 {
-    protected EntityTypeBuilder<PlantEntity> EntityTypeBuilder;
+    protected EntityTypeBuilder<PlantEntity>? EntityTypeBuilder;
     public DbSet<PlantEntity>? Plants { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

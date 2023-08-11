@@ -23,15 +23,15 @@ namespace PlantServiceTest;
 
 public class PlantServiceTest : TestCore.TestCoreTest
 {
-    private IGetPlantRequestHandler _getPlantRequestHandler;
-    private List<PlantEntity> _plantEntities;
+    private IGetPlantRequestHandler _getPlantRequestHandler = null!;
+    private List<PlantEntity> _plantEntities = null!;
 
     [SetUp]
     public void Setup()
     {
         _plantEntities = new List<PlantEntity>
         {
-            new PlantEntity { Name = "", PlantId = new Guid("0f8fad5b-d9cb-469f-a165-70867728950e") }
+            new() { Name = "", PlantId = new Guid("0f8fad5b-d9cb-469f-a165-70867728950e") }
         };
 
         PlantServiceContext context = new PlantServiceContext(new DbContextOptionsBuilder<PlantServiceContext>().Options) { Plants = GetQueryableMockDbSet(_plantEntities) };
