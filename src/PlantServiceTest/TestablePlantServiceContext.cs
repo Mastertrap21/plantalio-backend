@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PlantService;
+using PlantService.Entity;
 
 namespace PlantServiceTest;
 
@@ -14,5 +16,10 @@ public class TestablePlantServiceContext : PlantServiceContext
     {
         ModelBuilder = modelBuilder;
         base.OnModelCreating(modelBuilder);
+    }
+
+    public EntityTypeBuilder<PlantEntity> GetEntityTypeBuilder()
+    {
+        return EntityTypeBuilder;
     }
 }

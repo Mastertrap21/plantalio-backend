@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using Core.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
@@ -49,9 +51,20 @@ public class PlantServiceTest : TestCore.TestCoreTest
     public void Test_PlantServiceContextOnModelCreating()
     {
         DbContextOptionsBuilder<PlantServiceContext> builder = new DbContextOptionsBuilder<PlantServiceContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString());
-        var context = new TestablePlantServiceContext(builder.Options);
+        var options = builder.Options;
+        var context = new TestablePlantServiceContext(options);
         context.Database.EnsureCreated();
-        var entityType = new EntityType("PlantEntity", typeof(PlantEntity), new Model(), false, ConfigurationSource.Convention);
+        var entityTypeBuilder = context.GetEntityTypeBuilder();
+        
+        var plantIdColumn = entityTypeBuilder?.Metadata.FindDeclaredProperty(nameof(PlantEntity.PlantId));
+        Assert.NotNull(plantIdColumn);
+        Assert.False(plantIdColumn?.IsNullable);
+        Assert.True(plantIdColumn?.IsKey());
+        
+        var nameColumn = entityTypeBuilder?.Metadata.FindDeclaredProperty(nameof(PlantEntity.Name));
+        Assert.NotNull(nameColumn);
+        Assert.False(nameColumn?.IsNullable);
+        Assert.False(nameColumn?.IsKey());
     }
     
     [Test]
