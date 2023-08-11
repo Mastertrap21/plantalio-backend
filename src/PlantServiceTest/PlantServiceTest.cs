@@ -48,6 +48,13 @@ public class PlantServiceTest : TestCore.TestCoreTest
     }
     
     [Test]
+    public void Test_PlantServiceContextEmptyConstructor()
+    {
+        var context = new TestablePlantServiceContext();
+        Assert.IsInstanceOf(typeof(PlantServiceContext), context);
+    }
+    
+    [Test]
     public void Test_PlantServiceContextOnModelCreating()
     {
         DbContextOptionsBuilder<PlantServiceContext> builder = new DbContextOptionsBuilder<PlantServiceContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString());

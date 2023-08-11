@@ -11,6 +11,9 @@ public class TestablePlantServiceContext : PlantServiceContext
     public TestablePlantServiceContext(DbContextOptions<PlantServiceContext> options) : base(options)
     {
     }
+    public TestablePlantServiceContext()
+    {
+    }
     public void TestOnModelCreating(ModelBuilder modelBuilder) => OnModelCreating(modelBuilder);
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
