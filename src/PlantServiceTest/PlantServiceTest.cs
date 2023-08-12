@@ -84,13 +84,25 @@ public class PlantServiceTest : TestCore.TestCoreTest
     }
     
     [Test]
+    public void Test_RegisterFuncListeners_Success()
+    {
+        Mock<IFunctionService> functionServiceMock = new Mock<IFunctionService>();
+        IFunctionService functionService = functionServiceMock.Object;
+        _getPlantRequestHandler.RegisterFuncListeners(functionService);
+        functionServiceMock.Verify(
+            fs => fs.Register(
+                It.IsAny<Action<GetPlantRequest>>()),
+            Times.Once());
+    }
+    
+    [Test]
     public void Test_ServiceStart_Success()
     {
         Mock<IMessageService> messageServiceMock = new Mock<IMessageService>();
         IMessageService messageService = messageServiceMock.Object;
-        FunctionService fs = new FunctionService(Logger, messageService);
-        _getPlantRequestHandler.RegisterFuncListeners(fs);
-        fs.Start(ExecutionContext.Service);
+        Mock<FunctionService> functionServiceMock = new Mock<FunctionService>(Logger, messageService);
+        IFunctionService functionService = functionServiceMock.Object;
+        functionService.Start(ExecutionContext.Service);
         messageServiceMock.Verify(
             ms => ms.Subscribe(
                 It.IsAny<string>(), 
@@ -104,9 +116,9 @@ public class PlantServiceTest : TestCore.TestCoreTest
     {
         Mock<IMessageService> messageServiceMock = new Mock<IMessageService>();
         IMessageService messageService = messageServiceMock.Object;
-        FunctionService fs = new FunctionService(Logger, messageService);
-        _getPlantRequestHandler.RegisterFuncListeners(fs);
-        fs.StartSubscriber(ExecutionContext.Service);
+        Mock<FunctionService> functionServiceMock = new Mock<FunctionService>(Logger, messageService);
+        IFunctionService functionService = functionServiceMock.Object;
+        functionService.StartSubscriber(ExecutionContext.Service);
         messageServiceMock.Verify(
             ms => ms.Subscribe(
                 It.IsAny<string>(), 
