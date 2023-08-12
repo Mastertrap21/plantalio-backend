@@ -14,7 +14,7 @@ public class FunctionService : IFunctionService
         
         private readonly ILogger _log;
         private readonly CancellationTokenSource _cts;
-        private readonly IDictionary<string, Tuple<Type, Action<FunctionPayload>>> _listeners = new ConcurrentDictionary<string, Tuple<Type, Action<FunctionPayload>>>();
+        private readonly IDictionary<string, Tuple<Type, Action<IFunctionPayload>>> _listeners = new ConcurrentDictionary<string, Tuple<Type, Action<IFunctionPayload>>>();
         private readonly IMessageService _messageService;
 
         public FunctionService(ILogger log, IMessageService messageService)
@@ -91,7 +91,7 @@ public class FunctionService : IFunctionService
             _cts.Cancel();
         }
 
-        public void Register<T>(Action<T> action) where T : FunctionPayload
+        public void Register<T>(Action<T> action) where T : IFunctionPayload
         {
             var func = typeof(T).Name;
             _log.LogDebug("Registering function: {Function}", func);
@@ -100,7 +100,7 @@ public class FunctionService : IFunctionService
                 throw new Exception($"Function {func} is already handled");
             }
             
-            if (_listeners.TryAdd(func, new Tuple<Type, Action<FunctionPayload>>(typeof(T), payload => action((T)payload)))) {
+            if (_listeners.TryAdd(func, new Tuple<Type, Action<IFunctionPayload>>(typeof(T), payload => action((T)payload)))) {
                 _log.LogDebug("Function registered: {Function}", func);
             }
             else
@@ -116,7 +116,7 @@ public class FunctionService : IFunctionService
                 throw new Exception("Any function is already handled");
             }
 
-            var added = _listeners.TryAdd(AnyFunction, new Tuple<Type, Action<FunctionPayload>>(typeof(AnyFunctionPayload), 
+            var added = _listeners.TryAdd(AnyFunction, new Tuple<Type, Action<IFunctionPayload>>(typeof(AnyFunctionPayload), 
                 payload => action((AnyFunctionPayload)payload)));
             
             if (!added)
