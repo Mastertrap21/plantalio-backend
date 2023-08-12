@@ -94,22 +94,38 @@ public class UserServiceTest : TestCore.TestCoreTest
         Assert.DoesNotThrow(() => _registerRequestHandler.RegisterFuncListeners(fs));
         Assert.Throws<Exception>(() => _registerRequestHandler.RegisterFuncListeners(fs));
     }
+
+    [Test]
+    public void Test_RegisterFuncListeners_Success()
+    {
+        Mock<IFunctionService> functionServiceMock = new Mock<IFunctionService>();
+        IFunctionService functionService = functionServiceMock.Object;
+         _loginRequestHandler.RegisterFuncListeners(functionService);
+         functionServiceMock.Verify(
+            fs => fs.Register(
+                It.IsAny<Action<LoginRequest>>()),
+            Times.Once());
+         _registerRequestHandler.RegisterFuncListeners(functionService);
+         functionServiceMock.Verify(
+             fs => fs.Register(
+                 It.IsAny<Action<RegisterRequest>>()),
+             Times.Once());
+    }
     
     [Test]
     public void Test_ServiceStart_Success()
     {
         Mock<IMessageService> messageServiceMock = new Mock<IMessageService>();
         IMessageService messageService = messageServiceMock.Object;
-        FunctionService fs = new FunctionService(Logger, messageService);
-        _loginRequestHandler.RegisterFuncListeners(fs);
-        _registerRequestHandler.RegisterFuncListeners(fs);
-        fs.Start(ExecutionContext.Service);
+        Mock<FunctionService> functionServiceMock = new Mock<FunctionService>(Logger, messageService);
+        IFunctionService functionService = functionServiceMock.Object;
+        functionService.Start(ExecutionContext.Service);
         messageServiceMock.Verify(
             ms => ms.Subscribe(
                 It.IsAny<string>(), 
                 It.IsAny<Action<FunctionMessage>>(), 
                 It.IsAny<bool>()),
-            Times.Exactly(2));
+            Times.Once());
     }
     
     [Test]
@@ -117,16 +133,15 @@ public class UserServiceTest : TestCore.TestCoreTest
     {
         Mock<IMessageService> messageServiceMock = new Mock<IMessageService>();
         IMessageService messageService = messageServiceMock.Object;
-        FunctionService fs = new FunctionService(Logger, messageService);
-        _loginRequestHandler.RegisterFuncListeners(fs);
-        _registerRequestHandler.RegisterFuncListeners(fs);
-        fs.StartSubscriber(ExecutionContext.Service);
+        Mock<FunctionService> functionServiceMock = new Mock<FunctionService>(Logger, messageService);
+        IFunctionService functionService = functionServiceMock.Object;
+        functionService.StartSubscriber(ExecutionContext.Service);
         messageServiceMock.Verify(
             ms => ms.Subscribe(
                 It.IsAny<string>(), 
                 It.IsAny<Action<FunctionMessage>>(), 
                 It.IsAny<bool>()),
-            Times.Exactly(2));
+            Times.Exactly(1));
     }
     
     [Test]
