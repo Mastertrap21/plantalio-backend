@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Core;
 using Core.Messaging;
 using Core.Model;
+using Core.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
@@ -49,6 +51,82 @@ public class UserServiceTest : TestCore.TestCoreTest
     public void Test_AlwaysPass()
     {
         Assert.Pass();
+    }
+    
+    [Test]
+    public void Test_PlantServiceContextEmptyConstructor()
+    {
+        var context = new TestableUserServiceContext();
+        Assert.IsInstanceOf(typeof(UserServiceContext), context);
+    }
+    
+    [Test]
+    public void Test_PlantServiceContextOnModelCreating()
+    {
+        DbContextOptionsBuilder<UserServiceContext> builder = new DbContextOptionsBuilder<UserServiceContext>().UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString());
+        var options = builder.Options;
+        var context = new TestableUserServiceContext(options);
+        context.Database.EnsureCreated();
+        var entityTypeBuilder = context.GetEntityTypeBuilder();
+        
+        var userIdColumn = entityTypeBuilder?.Metadata.FindDeclaredProperty(nameof(UserEntity.UserId));
+        Assert.NotNull(userIdColumn);
+        Assert.False(userIdColumn?.IsNullable);
+        Assert.True(userIdColumn?.IsKey());
+        
+        var usernameColumn = entityTypeBuilder?.Metadata.FindDeclaredProperty(nameof(UserEntity.Username));
+        Assert.NotNull(usernameColumn);
+        Assert.False(usernameColumn?.IsNullable);
+        Assert.False(usernameColumn?.IsKey());
+        
+        var passwordColumn = entityTypeBuilder?.Metadata.FindDeclaredProperty(nameof(UserEntity.Password));
+        Assert.NotNull(passwordColumn);
+        Assert.False(passwordColumn?.IsNullable);
+    }
+    
+    [Test]
+    public void Test_RegisterFuncListeners_Exceptions()
+    {
+        IMessageService messageService = new Mock<IMessageService>().Object;
+        FunctionService fs = new FunctionService(Logger, messageService);
+        Assert.DoesNotThrow(() => _loginRequestHandler.RegisterFuncListeners(fs));
+        Assert.Throws<Exception>(() => _loginRequestHandler.RegisterFuncListeners(fs));
+        Assert.DoesNotThrow(() => _registerRequestHandler.RegisterFuncListeners(fs));
+        Assert.Throws<Exception>(() => _registerRequestHandler.RegisterFuncListeners(fs));
+    }
+    
+    [Test]
+    public void Test_ServiceStart_Success()
+    {
+        Mock<IMessageService> messageServiceMock = new Mock<IMessageService>();
+        IMessageService messageService = messageServiceMock.Object;
+        FunctionService fs = new FunctionService(Logger, messageService);
+        _loginRequestHandler.RegisterFuncListeners(fs);
+        _registerRequestHandler.RegisterFuncListeners(fs);
+        fs.Start(ExecutionContext.Service);
+        messageServiceMock.Verify(
+            ms => ms.Subscribe(
+                It.IsAny<string>(), 
+                It.IsAny<Action<FunctionMessage>>(), 
+                It.IsAny<bool>()),
+            Times.Exactly(2));
+    }
+    
+    [Test]
+    public void Test_ServiceStartSubscriber_Success()
+    {
+        Mock<IMessageService> messageServiceMock = new Mock<IMessageService>();
+        IMessageService messageService = messageServiceMock.Object;
+        FunctionService fs = new FunctionService(Logger, messageService);
+        _loginRequestHandler.RegisterFuncListeners(fs);
+        _registerRequestHandler.RegisterFuncListeners(fs);
+        fs.StartSubscriber(ExecutionContext.Service);
+        messageServiceMock.Verify(
+            ms => ms.Subscribe(
+                It.IsAny<string>(), 
+                It.IsAny<Action<FunctionMessage>>(), 
+                It.IsAny<bool>()),
+            Times.Exactly(2));
     }
     
     [Test]

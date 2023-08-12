@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using UserService.Entity;
 
 namespace UserService;
 
 public class UserServiceContext : DbContext, IUserServiceContext
 {
+    protected EntityTypeBuilder<UserEntity>? EntityTypeBuilder;
     public DbSet<UserEntity>? Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -12,6 +14,7 @@ public class UserServiceContext : DbContext, IUserServiceContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<UserEntity>(entity =>
         {
+            EntityTypeBuilder = entity;
             entity.Property(u => u.UserId).IsRequired();
             entity.Property(u => u.Username).IsRequired();
             entity.Property(u => u.Password).IsRequired();
