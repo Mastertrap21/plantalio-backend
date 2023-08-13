@@ -71,17 +71,17 @@ public class UserServiceTest : TestCore.TestCoreTest
         
         var userIdColumn = entityTypeBuilder?.Metadata.FindDeclaredProperty(nameof(UserEntity.UserId));
         Assert.NotNull(userIdColumn);
-        Assert.False(userIdColumn?.IsNullable);
-        Assert.True(userIdColumn?.IsKey());
+        Assert.False(userIdColumn.IsNullable);
+        Assert.True(userIdColumn.IsKey());
         
-        var usernameColumn = entityTypeBuilder?.Metadata.FindDeclaredProperty(nameof(UserEntity.Username));
+        var usernameColumn = entityTypeBuilder.Metadata.FindDeclaredProperty(nameof(UserEntity.Username));
         Assert.NotNull(usernameColumn);
-        Assert.False(usernameColumn?.IsNullable);
-        Assert.False(usernameColumn?.IsKey());
+        Assert.False(usernameColumn.IsNullable);
+        Assert.False(usernameColumn.IsKey());
         
-        var passwordColumn = entityTypeBuilder?.Metadata.FindDeclaredProperty(nameof(UserEntity.Password));
+        var passwordColumn = entityTypeBuilder.Metadata.FindDeclaredProperty(nameof(UserEntity.Password));
         Assert.NotNull(passwordColumn);
-        Assert.False(passwordColumn?.IsNullable);
+        Assert.False(passwordColumn.IsNullable);
     }
     
     [Test]
