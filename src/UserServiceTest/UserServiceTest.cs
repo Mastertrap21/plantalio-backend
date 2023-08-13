@@ -221,11 +221,11 @@ public class UserServiceTest : TestCore.TestCoreTest
         _loginRequestHandler.Login(loginRequest);
         Assert.AreEqual(loginRequest, _lastRequest);
         Assert.IsInstanceOf(typeof(LoginResponse), _lastResponse);
-        Assert.IsTrue(((LoginResponse)_lastResponse).Success);
-        Assert.IsNull(((LoginResponse)_lastResponse).Error);
-        Assert.IsNotNull(((LoginResponse)_lastResponse).User);
-        Assert.IsNotNull(((LoginResponse)_lastResponse).User?.UserId);
-        Assert.AreEqual(((LoginResponse)_lastResponse).User?.Username, "TestTrim");
+        Assert.IsTrue((_lastResponse as ILoginResponse)?.Success);
+        Assert.IsNull((_lastResponse as ILoginResponse)?.Error);
+        Assert.IsNotNull((_lastResponse as ILoginResponse)?.User);
+        Assert.IsNotNull((_lastResponse as ILoginResponse)?.User?.UserId);
+        Assert.AreEqual((_lastResponse as ILoginResponse)?.User?.Username, "TestTrim");
     }
     
 }
