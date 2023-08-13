@@ -26,7 +26,7 @@ internal class LoginRequestHandler : Core.Handler.FunctionHandler, ILoginRequest
 
     public void Login(ILoginRequest request)
     {
-        var username = request.Username?.Trim();
+        var username = request.Username;
         var response = new LoginResponse();
 
         try
@@ -34,35 +34,54 @@ internal class LoginRequestHandler : Core.Handler.FunctionHandler, ILoginRequest
             using var context = _contextFactory.CreateDbContext();
             
             Log.LogInformation("Handling login request. Checking username: {Username}", username);
-            if (context.Users != null)
+            
+            if (username == null)
             {
-                var user = context.Users
-                    .SingleOrDefault(u => u.Username == request.Username);
-                if (user != null && BCryptNet.Verify(request.Password, user.Password))
-                {
-                    Log.LogInformation("Authentication succeeded for user: {Username}", username);
-                    response.Success = true;
-                    response.User = new UserDTO
-                    {
-                        UserId = user.UserId,
-                        Username = user.Username
-                    };
-                }
-                else
-                {
-                    response.Error = ErrorCodes.WrongUserOrPassword;
-                    Log.LogInformation("Authentication failed for user: {Username}", username);
-                }
+                response.Error = ErrorCodes.MissingFields;
+                _producer.Respond(request, response);
+                return;
             }
-            else
+            
+            username = username.Trim();
+
+            if (context.Users == null)
+            {
+                response.Error = ErrorCodes.UnknownError;
+                Log.LogError("Authentication failed for user: {Username} as users is null", username);
+                _producer.Respond(request, response);
+                return;
+            }
+
+            var user = context.Users
+                    .SingleOrDefault(u => u.Username == username);
+            
+            if (user == null)
             {
                 response.Error = ErrorCodes.WrongUserOrPassword;
-                Log.LogInformation("Authentication failed for user: {Username} as no users exists", username);
+                Log.LogInformation("Authentication failed for user: {Username}", username);
+                _producer.Respond(request, response);
+                return;
             }
+            
+            if(!BCryptNet.Verify(request.Password, user.Password))
+            {
+                response.Error = ErrorCodes.WrongUserOrPassword;
+                Log.LogInformation("Authentication failed for user: {Username}", username);
+                _producer.Respond(request, response);
+                return;
+            }
+            
+            Log.LogInformation("Authentication succeeded for user: {Username}", username);
+            response.Success = true;
+            response.User = new UserDTO
+            {
+                UserId = user.UserId,
+                Username = user.Username
+            };
         }
         catch (Exception e)
         {
-            response.Error = ErrorCodes.WrongUserOrPassword;
+            response.Error = ErrorCodes.UnknownError;
             Log.LogError(e, "Failed to handle login request. Request: {@Request}", request);
         }
 

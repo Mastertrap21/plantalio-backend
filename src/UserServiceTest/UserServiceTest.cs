@@ -275,5 +275,60 @@ public class UserServiceTest : TestCore.TestCoreTest
         _registerRequestHandler.Register(request);
         VerifyLogger(LogLevel.Error, Times.Once());
     }
+    
+    [Test]
+    public void Test_LoginUsernameTrim_Success()
+    {
+        ILoginRequest request = new LoginRequest { Username = " Test ", Password = "test" };
+        _loginRequestHandler.Login(request);
+        Assert.AreEqual(request, _lastRequest);
+        Assert.IsInstanceOf(typeof(LoginResponse), _lastResponse);
+        Assert.IsTrue((_lastResponse as ILoginResponse)?.Success);
+        Assert.IsNull((_lastResponse as ILoginResponse)?.Error);
+        Assert.IsNotNull((_lastResponse as ILoginResponse)?.User);
+        Assert.IsNotNull((_lastResponse as ILoginResponse)?.User?.UserId);
+        Assert.AreEqual((_lastResponse as ILoginResponse)?.User?.Username, "Test");
+    }
+
+    [Test]
+    public void Test_LoginNullUsername_Fail()
+    {
+        ILoginRequest request = new LoginRequest { Password = "test" };
+        _loginRequestHandler.Login(request);
+        Assert.AreEqual(request, _lastRequest);
+        Assert.IsInstanceOf(typeof(LoginResponse), _lastResponse);
+        Assert.IsFalse(((LoginResponse)_lastResponse).Success);
+        Assert.IsNotNull(((LoginResponse)_lastResponse).Error);
+        Assert.AreEqual(((LoginResponse)_lastResponse).Error, ErrorCodes.MissingFields);
+        Assert.IsNull(((LoginResponse)_lastResponse).User?.UserId);
+    }
+    
+    [Test]
+    public void Test_LoginNullUsers_Fail()
+    {
+        _userServiceContext.Users = null;
+        ILoginRequest request = new LoginRequest { Username = "Test", Password = "test" };
+        _loginRequestHandler.Login(request);
+        Assert.AreEqual(request, _lastRequest);
+        Assert.IsInstanceOf(typeof(LoginResponse), _lastResponse);
+        Assert.IsFalse(((LoginResponse)_lastResponse).Success);
+        Assert.IsNotNull(((LoginResponse)_lastResponse).Error);
+        Assert.AreEqual(((LoginResponse)_lastResponse).Error, ErrorCodes.UnknownError);
+        VerifyLogger(LogLevel.Error, Times.Once());
+    }
+    
+    [Test]
+    public void Test_LoginException_Fail()
+    {
+        _userServiceContextFactoryMock.Setup(ps => ps.CreateDbContext()).Callback(() => throw new Exception("Unit test exception"));
+        ILoginRequest request = new LoginRequest { Username = "Test", Password = "test" };
+        _loginRequestHandler.Login(request);
+        Assert.AreEqual(request, _lastRequest);
+        Assert.IsInstanceOf(typeof(LoginResponse), _lastResponse);
+        Assert.IsFalse(((LoginResponse)_lastResponse).Success);
+        Assert.IsNotNull(((LoginResponse)_lastResponse).Error);
+        Assert.AreEqual(((LoginResponse)_lastResponse).Error, ErrorCodes.UnknownError);
+        VerifyLogger(LogLevel.Error, Times.Once());
+    }
 
 }
