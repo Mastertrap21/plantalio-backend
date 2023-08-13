@@ -207,4 +207,25 @@ public class UserServiceTest : TestCore.TestCoreTest
         Assert.IsNull(((RegisterResponse)_lastResponse).Error);
     }
     
+    [Test]
+    public void Test_RegisterUsernameTrim_Success()
+    {
+        IRegisterRequest registerRequest = new RegisterRequest { Username = " TestTrim ", Password = "testTrim" };
+        _registerRequestHandler.Register(registerRequest);
+        Assert.AreEqual(registerRequest, _lastRequest);
+        Assert.IsInstanceOf(typeof(RegisterResponse), _lastResponse);
+        Assert.IsTrue(((RegisterResponse)_lastResponse).Success);
+        Assert.IsNull(((RegisterResponse)_lastResponse).Error);
+        
+        ILoginRequest loginRequest = new LoginRequest { Username = "TestTrim", Password = "testTrim" };
+        _loginRequestHandler.Login(loginRequest);
+        Assert.AreEqual(loginRequest, _lastRequest);
+        Assert.IsInstanceOf(typeof(LoginResponse), _lastResponse);
+        Assert.IsTrue(((LoginResponse)_lastResponse).Success);
+        Assert.IsNull(((LoginResponse)_lastResponse).Error);
+        Assert.IsNotNull(((LoginResponse)_lastResponse).User);
+        Assert.IsNotNull(((LoginResponse)_lastResponse).User?.UserId);
+        Assert.AreEqual(((LoginResponse)_lastResponse).User?.Username, "TestTrim");
+    }
+    
 }
