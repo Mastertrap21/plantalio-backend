@@ -18,6 +18,9 @@ namespace UserServiceTest;
 public class UserServiceTest : TestCore.TestCoreTest
 {
     private UserServiceContext _userServiceContext;
+    private Mock<IDbContextFactory<UserServiceContext>> _userServiceContextFactoryMock;
+    private DbContextOptions<UserServiceContext> _userServiceDbContextOptions;
+    private DbSet<UserEntity> _userServiceDbSet;
     private ILoginRequestHandler _loginRequestHandler;
     private IRegisterRequestHandler _registerRequestHandler;
     private IProducer _producer;
@@ -27,7 +30,6 @@ public class UserServiceTest : TestCore.TestCoreTest
     [SetUp]
     public void Setup()
     {
-        ILogger logger = new Mock<ILogger>().Object;
         var mock = new Mock<IProducer>();
         mock.Setup(p => p.Respond(It.IsAny<IFunctionPayload>(), It.IsAny<IFunctionPayload>()))
             .Callback((IFunctionPayload request, IFunctionPayload response) =>
@@ -37,15 +39,22 @@ public class UserServiceTest : TestCore.TestCoreTest
             });
         _producer = mock.Object;
 
-        _userServiceContext = new UserServiceContext(new DbContextOptionsBuilder<UserServiceContext>().UseInMemoryDatabase(databaseName: "PlantServiceTest").Options) { Users = GetQueryableMockDbSet(new List<UserEntity>
+        _userServiceDbContextOptions = new DbContextOptionsBuilder<UserServiceContext>()
+            .UseInMemoryDatabase(databaseName: "PlantServiceTest").Options;
+        _userServiceDbSet = GetQueryableMockDbSet(new List<UserEntity>
         {
-            new UserEntity { Username = "Test", UserId = new Guid("0f8fad5b-d9cb-469f-a165-70867728950e"), Password = "$2y$10$KObsPVxQ2lFpeyHrQNPH1u7tmsVUM9GQt.x.LA9zRHI0hRw6/TaVW" }
-        }) };
-        var contextFactoryMock = new Mock<IDbContextFactory<UserServiceContext>>();
-        contextFactoryMock.Setup(ps => ps.CreateDbContext()).Returns(() => _userServiceContext);
-        IDbContextFactory<UserServiceContext> userServiceContextFactory = contextFactoryMock.Object;
-        _loginRequestHandler = new LoginRequestHandler(logger, _producer, userServiceContextFactory);
-        _registerRequestHandler = new RegisterRequestHandler(logger, _producer, userServiceContextFactory);
+            new UserEntity
+            {
+                Username = "Test", UserId = new Guid("0f8fad5b-d9cb-469f-a165-70867728950e"),
+                Password = "$2y$10$KObsPVxQ2lFpeyHrQNPH1u7tmsVUM9GQt.x.LA9zRHI0hRw6/TaVW"
+            }
+        });
+        _userServiceContext = new UserServiceContext(_userServiceDbContextOptions) { Users =  _userServiceDbSet };
+        _userServiceContextFactoryMock = new Mock<IDbContextFactory<UserServiceContext>>();
+        _userServiceContextFactoryMock.Setup(ps => ps.CreateDbContext()).Returns(() => _userServiceContext);
+        var userServiceContextFactory = _userServiceContextFactoryMock.Object;
+        _loginRequestHandler = new LoginRequestHandler(Logger, _producer, userServiceContextFactory);
+        _registerRequestHandler = new RegisterRequestHandler(Logger, _producer, userServiceContextFactory);
     }
 
     [Test]
@@ -252,6 +261,19 @@ public class UserServiceTest : TestCore.TestCoreTest
         Assert.IsFalse(((RegisterResponse)_lastResponse).Success);
         Assert.IsNotNull(((RegisterResponse)_lastResponse).Error);
         Assert.AreEqual(((RegisterResponse)_lastResponse).Error, ErrorCodes.UnknownError);
+    }
+    
+    [Test]
+    public void Test_RegisterException_Fail()
+    {
+        var userServiceContextMock = new Mock<UserServiceContext>(_userServiceDbContextOptions);
+        var userServiceContext = userServiceContextMock.Object;
+        userServiceContext.Users = _userServiceDbSet;
+        userServiceContextMock.Setup(usc => usc.SaveChanges()).Callback(() => throw new Exception("Unit test exception"));
+        _userServiceContextFactoryMock.Setup(ps => ps.CreateDbContext()).Returns(() => userServiceContextMock.Object);
+        IRegisterRequest request = new RegisterRequest { Username = "Test2", Password = "test2" };
+        _registerRequestHandler.Register(request);
+        VerifyLogger(LogLevel.Error, Times.Once());
     }
 
 }

@@ -58,7 +58,7 @@ internal class RegisterRequestHandler : Core.Handler.FunctionHandler, IRegisterR
                 return;
             }
 
-            context.Users?.Add(new UserEntity
+            context.Users.Add(new UserEntity
             {
                 UserId = Guid.NewGuid(),
                 Username = username,
