@@ -228,4 +228,16 @@ public class UserServiceTest : TestCore.TestCoreTest
         Assert.AreEqual((_lastResponse as ILoginResponse)?.User?.Username, "TestTrim");
     }
     
+    [Test]
+    public void Test_RegisterNullUsername_Fail()
+    {
+        IRegisterRequest request = new RegisterRequest { Password = "testNullFail" };
+        _registerRequestHandler.Register(request);
+        Assert.AreEqual(request, _lastRequest);
+        Assert.IsInstanceOf(typeof(RegisterResponse), _lastResponse);
+        Assert.IsFalse(((RegisterResponse)_lastResponse).Success);
+        Assert.IsNotNull(((RegisterResponse)_lastResponse).Error);
+        Assert.AreEqual(((RegisterResponse)_lastResponse).Error, ErrorCodes.MissingFields);
+    }
+    
 }
