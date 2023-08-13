@@ -26,7 +26,7 @@ internal class RegisterRequestHandler : Core.Handler.FunctionHandler, IRegisterR
 
     public void Register(IRegisterRequest request)
     {
-        var username = request.Username?.Trim();
+        var username = request.Username;
         var response = new RegisterResponse();
 
         try
@@ -34,23 +34,32 @@ internal class RegisterRequestHandler : Core.Handler.FunctionHandler, IRegisterR
             using var context = _contextFactory.CreateDbContext();
                 
             Log.LogInformation("Handling register request. Checking username: {Username}", username);
+            
+            if (username == null)
+            {
+                response.Error = ErrorCodes.MissingFields;
+                _producer.Respond(request, response);
+                return;
+            }
+            
+            username = username.Trim();
                 
             if (context.Users != null && context.Users.Any(u => u.Username == username))
             {
                 response.Error = ErrorCodes.UserExists;
+                _producer.Respond(request, response);
+                return;
             }
-            else
+
+            context.Users?.Add(new UserEntity
             {
-                context.Users?.Add(new UserEntity
-                {
-                    UserId = Guid.NewGuid(),
-                    Username = username,
-                    Password = BCryptNet.HashPassword(request.Password),
-                });
-                context.SaveChanges();
+                UserId = Guid.NewGuid(),
+                Username = username,
+                Password = BCryptNet.HashPassword(request.Password),
+            });
+            context.SaveChanges();
                     
-                response.Success = true;
-            }
+            response.Success = true;
         }
         catch (Exception e)
         {

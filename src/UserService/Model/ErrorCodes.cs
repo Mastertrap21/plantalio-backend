@@ -3,5 +3,6 @@ namespace UserService.Model;
 public enum ErrorCodes
 {
     UserExists,
-    WrongUserOrPassword
+    WrongUserOrPassword,
+    MissingFields
 }
