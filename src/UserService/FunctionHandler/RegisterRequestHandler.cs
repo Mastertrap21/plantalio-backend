@@ -43,8 +43,15 @@ internal class RegisterRequestHandler : Core.Handler.FunctionHandler, IRegisterR
             }
             
             username = username.Trim();
+
+            if (context.Users == null)
+            {
+                response.Error = ErrorCodes.UnknownError;
+                _producer.Respond(request, response);
+                return;
+            }
                 
-            if (context.Users != null && context.Users.Any(u => u.Username == username))
+            if (context.Users.Any(u => u.Username == username))
             {
                 response.Error = ErrorCodes.UserExists;
                 _producer.Respond(request, response);

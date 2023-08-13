@@ -17,6 +17,7 @@ namespace UserServiceTest;
 
 public class UserServiceTest : TestCore.TestCoreTest
 {
+    private UserServiceContext _userServiceContext;
     private ILoginRequestHandler _loginRequestHandler;
     private IRegisterRequestHandler _registerRequestHandler;
     private IProducer _producer;
@@ -36,12 +37,12 @@ public class UserServiceTest : TestCore.TestCoreTest
             });
         _producer = mock.Object;
 
-        UserServiceContext context = new UserServiceContext(new DbContextOptionsBuilder<UserServiceContext>().UseInMemoryDatabase(databaseName: "PlantServiceTest").Options) { Users = GetQueryableMockDbSet(new List<UserEntity>
+        _userServiceContext = new UserServiceContext(new DbContextOptionsBuilder<UserServiceContext>().UseInMemoryDatabase(databaseName: "PlantServiceTest").Options) { Users = GetQueryableMockDbSet(new List<UserEntity>
         {
             new UserEntity { Username = "Test", UserId = new Guid("0f8fad5b-d9cb-469f-a165-70867728950e"), Password = "$2y$10$KObsPVxQ2lFpeyHrQNPH1u7tmsVUM9GQt.x.LA9zRHI0hRw6/TaVW" }
         }) };
         var contextFactoryMock = new Mock<IDbContextFactory<UserServiceContext>>();
-        contextFactoryMock.Setup(ps => ps.CreateDbContext()).Returns(() => context);
+        contextFactoryMock.Setup(ps => ps.CreateDbContext()).Returns(() => _userServiceContext);
         IDbContextFactory<UserServiceContext> userServiceContextFactory = contextFactoryMock.Object;
         _loginRequestHandler = new LoginRequestHandler(logger, _producer, userServiceContextFactory);
         _registerRequestHandler = new RegisterRequestHandler(logger, _producer, userServiceContextFactory);
@@ -227,7 +228,7 @@ public class UserServiceTest : TestCore.TestCoreTest
         Assert.IsNotNull((_lastResponse as ILoginResponse)?.User?.UserId);
         Assert.AreEqual((_lastResponse as ILoginResponse)?.User?.Username, "TestTrim");
     }
-    
+
     [Test]
     public void Test_RegisterNullUsername_Fail()
     {
@@ -240,4 +241,17 @@ public class UserServiceTest : TestCore.TestCoreTest
         Assert.AreEqual(((RegisterResponse)_lastResponse).Error, ErrorCodes.MissingFields);
     }
     
+    [Test]
+    public void Test_RegisterNullUsers_Fail()
+    {
+        _userServiceContext.Users = null;
+        IRegisterRequest request = new RegisterRequest { Username = "Test2", Password = "test2" };
+        _registerRequestHandler.Register(request);
+        Assert.AreEqual(request, _lastRequest);
+        Assert.IsInstanceOf(typeof(RegisterResponse), _lastResponse);
+        Assert.IsFalse(((RegisterResponse)_lastResponse).Success);
+        Assert.IsNotNull(((RegisterResponse)_lastResponse).Error);
+        Assert.AreEqual(((RegisterResponse)_lastResponse).Error, ErrorCodes.UnknownError);
+    }
+
 }
