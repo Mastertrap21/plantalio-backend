@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using PlantService.FunctionHandler;
 using Moq;
+using MySqlConnector;
 using PlantService;
 using PlantService.Entity;
 using PlantService.Model;
@@ -162,5 +163,19 @@ public class PlantServiceTest : TestCore.TestCoreTest
         Assert.IsNull(((GetPlantResponse)LastResponse).Plant?.PlantId);
         VerifyLogger(LogLevel.Error, Times.Once());
     }
+    
+    [Test]
+    public void Test_PlantServiceContextFactory_Fail()
+    {
+        TestableDbContextOptionsBuilder<PlantServiceContext> dbContextOptionsBuilder = new TestableDbContextOptionsBuilder<PlantServiceContext>();
+        PlantServiceContextFactory plantServiceContextFactory = new PlantServiceContextFactory(dbContextOptionsBuilder);
+        Assert.Throws<MySqlException>(() =>
+        {
+            IPlantServiceContext plantServiceContext = plantServiceContextFactory.CreateDbContext(Array.Empty<string>());
+        });
+        Assert.AreNotEqual("server=localhost;port=3307;user=user;password=password;database=PlantService", dbContextOptionsBuilder.ConnectionString);
+    }
+    
+    // TODO: Test_PlantServiceContextFactory_Success
 
 }
