@@ -173,7 +173,6 @@ public class PlantServiceTest : TestCore.TestCoreTest
         {
             IPlantServiceContext plantServiceContext = plantServiceContextFactory.CreateDbContext(Array.Empty<string>());
         });
-        Assert.AreNotEqual("server=localhost;port=3307;user=user;password=password;database=PlantService", dbContextOptionsBuilder.ConnectionString);
         Assert.IsNull(dbContextOptionsBuilder.ConnectionString);
     }
     
