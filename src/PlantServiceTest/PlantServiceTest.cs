@@ -162,7 +162,6 @@ public class PlantServiceTest : TestCore.TestCoreTest
         Assert.IsNull(((GetPlantResponse)LastResponse).Plant);
         Assert.IsNull(((GetPlantResponse)LastResponse).Plant?.PlantId);
         VerifyLogger(LogLevel.Error, Times.Once());
-        
     }
     
     [Test]
