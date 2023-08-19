@@ -1,6 +1,6 @@
 namespace Core.Service;
 
-public abstract class ServiceBuilderBaseBase<TProgram> : IServiceBuilderBase where TProgram : IProgramBase, new()
+public abstract class ServiceBuilderBase<TProgram> : IServiceBuilderBase where TProgram : IProgramBase, new()
 {
     protected IProgramBase Program { get; } = new TProgram();
 

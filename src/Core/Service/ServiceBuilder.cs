@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Core.Service;
 
-public class ServiceBuilder<TProgram> : ServiceBuilderBaseBase<TProgram>, IServiceBuilder where TProgram : IProgramBase, new()
+public class ServiceBuilder<TProgram> : ServiceBuilderBase<TProgram>, IServiceBuilder where TProgram : IProgramBase, new()
 {
     private readonly IHostBuilder _builder = Host.CreateDefaultBuilder();
     private IHost _host = default!;
