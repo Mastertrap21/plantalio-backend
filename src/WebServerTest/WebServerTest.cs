@@ -19,7 +19,7 @@ public class WebServerTest : TestCore.TestCore
     [Test]
     public void AddAndGetPlant_Works()
     {
-        Plant newPlant = new Plant
+        var newPlant = new Plant
         {
             Name = "Name",
             Species = "Species",
