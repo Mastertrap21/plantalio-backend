@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.SignalR;
-
 namespace WebServer.Hub
 {
     

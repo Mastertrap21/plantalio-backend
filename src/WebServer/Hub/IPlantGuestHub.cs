@@ -1,6 +1,3 @@
-using System;
-using System.Threading.Tasks;
-
 namespace WebServer.Hub;
 
 public interface IPlantGuestHub

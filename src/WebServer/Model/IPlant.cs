@@ -1,5 +1,3 @@
-using System;
-
 namespace WebServer.Model;
 
 public interface IPlant
