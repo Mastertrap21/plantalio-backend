@@ -40,7 +40,7 @@ internal class GetPlantRequestHandler : Core.Handler.FunctionHandler, IGetPlantR
                 if (plant != null)
                 {
                     Log.LogInformation("Plant found: {PlantId}", plantId);
-                    response.Plant = new PlantDTO
+                    response.Plant = new PlantDto
                     {
                         PlantId = plant.PlantId,
                         Name = plant.Name

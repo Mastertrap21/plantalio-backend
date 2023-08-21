@@ -5,5 +5,5 @@ namespace PlantService.Model;
 
 public class GetPlantResponse : FunctionPayload, IGetPlantResponse
 {
-    public PlantDTO? Plant { get; set; }
+    public PlantDto? Plant { get; set; }
 }

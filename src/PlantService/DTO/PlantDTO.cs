@@ -1,6 +1,6 @@
 namespace PlantService.DTO;
 
-public class PlantDTO : IPlantDTO
+public class PlantDto : IPlantDto
 {
     public Guid PlantId { get; set; }
     public string? Name { get; set; }
