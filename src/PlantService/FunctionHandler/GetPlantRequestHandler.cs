@@ -32,14 +32,14 @@ internal class GetPlantRequestHandler : Core.Handler.FunctionHandler, IGetPlantR
         {
             using var context = _contextFactory.CreateDbContext();
             
-            Log.LogInformation("Handling get plant request. Checking plant id: {PlantId}", plantId);
+            Log.LogInformation(LoggingMessageTemplates.GetPlantRequestHandlePlantIdCheckInfo, plantId);
             if (context.Plants != null)
             {
                 var plant = context.Plants
                     .SingleOrDefault(p => p.PlantId == request.PlantId);
                 if (plant != null)
                 {
-                    Log.LogInformation("Plant found: {PlantId}", plantId);
+                    Log.LogInformation(LoggingMessageTemplates.GetPlantRequestHandlePlantIdFoundInfo, plantId);
                     response.Plant = new PlantDto
                     {
                         PlantId = plant.PlantId,
@@ -48,7 +48,7 @@ internal class GetPlantRequestHandler : Core.Handler.FunctionHandler, IGetPlantR
                 }
                 else
                 {
-                    Log.LogInformation("Plant not found: {PlantId}", plantId);
+                    Log.LogInformation(LoggingMessageTemplates.GetPlantRequestHandlePlantIdNotFoundInfo, plantId);
                 }
             }
         }
