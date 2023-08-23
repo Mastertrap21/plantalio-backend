@@ -33,7 +33,7 @@ internal class LoginRequestHandler : Core.Handler.FunctionHandler, ILoginRequest
         {
             using var context = _contextFactory.CreateDbContext();
             
-            Log.LogInformation("Handling login request. Checking username: {Username}", username);
+            Log.LogInformation(LoggingMessageTemplates.LoginRequestHandleUsernameCheck, username);
             
             if (username == null)
             {
@@ -47,7 +47,7 @@ internal class LoginRequestHandler : Core.Handler.FunctionHandler, ILoginRequest
             if (context.Users == null)
             {
                 response.Error = ErrorCodes.UnknownError;
-                Log.LogError("Authentication failed for user: {Username} as users is null", username);
+                Log.LogError(LoggingMessageTemplates.LoginRequestHandleUsersNullError, username);
                 _producer.Respond(request, response);
                 return;
             }
@@ -58,7 +58,7 @@ internal class LoginRequestHandler : Core.Handler.FunctionHandler, ILoginRequest
             if (user == null)
             {
                 response.Error = ErrorCodes.WrongUserOrPassword;
-                Log.LogInformation("Authentication failed for user: {Username}", username);
+                Log.LogInformation(LoggingMessageTemplates.LoginRequestHandleAuthFailedError, username);
                 _producer.Respond(request, response);
                 return;
             }
@@ -66,12 +66,12 @@ internal class LoginRequestHandler : Core.Handler.FunctionHandler, ILoginRequest
             if(!BCryptNet.Verify(request.Password, user.Password))
             {
                 response.Error = ErrorCodes.WrongUserOrPassword;
-                Log.LogInformation("Authentication failed for user: {Username}", username);
+                Log.LogInformation(LoggingMessageTemplates.LoginRequestHandleAuthFailedError, username);
                 _producer.Respond(request, response);
                 return;
             }
             
-            Log.LogInformation("Authentication succeeded for user: {Username}", username);
+            Log.LogInformation(LoggingMessageTemplates.LoginRequestHandleAuthSuccess, username);
             response.Success = true;
             response.User = new UserDTO
             {
@@ -82,7 +82,7 @@ internal class LoginRequestHandler : Core.Handler.FunctionHandler, ILoginRequest
         catch (Exception e)
         {
             response.Error = ErrorCodes.UnknownError;
-            Log.LogError(e, "Failed to handle login request. Request: {@Request}", request);
+            Log.LogError(e, LoggingMessageTemplates.LoginRequestHandleFailError, request);
         }
 
         _producer.Respond(request, response);

@@ -33,7 +33,7 @@ internal class RegisterRequestHandler : Core.Handler.FunctionHandler, IRegisterR
         {
             using var context = _contextFactory.CreateDbContext();
                 
-            Log.LogInformation("Handling register request. Checking username: {Username}", username);
+            Log.LogInformation(LoggingMessageTemplates.RegisterRequestHandleUsernameCheck, username);
             
             if (username == null)
             {
@@ -70,7 +70,7 @@ internal class RegisterRequestHandler : Core.Handler.FunctionHandler, IRegisterR
         }
         catch (Exception e)
         {
-            Log.LogError(e, "Failed to create user. Request: {@Request}", request);
+            Log.LogError(e, LoggingMessageTemplates.RegisterRequestHandleFailError, request);
         }
 
         _producer.Respond(request, response);
