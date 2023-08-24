@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using Core.Constants;
 using Core.Model;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -32,21 +33,21 @@ public class FunctionService : IFunctionService
         private void HandleFunction(FunctionMessage functionMessage)
         {
             var function = functionMessage.Function;
-            _log.LogDebug("Consumed function: {Function}", function);
+            _log.LogDebug(LoggingMessageTemplates.FunctionServiceHandleFunctionConsumedFunction, function);
             
             try
             {
                 if (_listeners.TryGetValue(AnyFunction, out var listener))
                 {
-                    _log.LogInformation("Handling ANY function");
+                    _log.LogInformation(LoggingMessageTemplates.FunctionServiceHandleFunctionHandlingAnyFunction);
                     listener.Item2(new AnyFunctionPayload(functionMessage.Payload));
-                    _log.LogInformation("Processed ANY function");
+                    _log.LogInformation(LoggingMessageTemplates.FunctionServiceHandleFunctionProcessedAnyFunction);
                     return;
                 }
 
                 if (function != null && !_listeners.ContainsKey(function))
                 {
-                    _log.LogDebug("Function ignored due to not attached: {Function}", function);
+                    _log.LogDebug(LoggingMessageTemplates.FunctionServiceHandleFunctionIgnoreNotAttachedFunction, function);
                     return;
                 }
 
@@ -55,28 +56,28 @@ public class FunctionService : IFunctionService
                 {
                     var (type, action) = _listeners[function];
 
-                    _log.LogInformation("Handling function: {Function}, Payload: {Payload}", function, payload);
+                    _log.LogInformation(LoggingMessageTemplates.FunctionServiceHandleFunctionHandlingFunctionAndPayload, function, payload);
 
                     if (!type.IsAssignableTo(typeof(FunctionPayload)))
                     {
-                        _log.LogError("Function ignored due to invalid function type: {Function}", function);
+                        _log.LogError(LoggingMessageTemplates.FunctionServiceHandleFunctionHandlingInvalidFunctionTypeIgnored, function);
                         return;
                     }
 
                     if (JsonConvert.DeserializeObject(payload ?? string.Empty, type) is not FunctionPayload functionModel)
                     {
-                        _log.LogError("Function '{Function}' ignored due to invalid function payload: {Payload}",
+                        _log.LogError(LoggingMessageTemplates.FunctionServiceHandleFunctionHandlingInvalidFunctionPayloadIgnored,
                             function, payload);
                         return;
                     }
 
                     action(functionModel);
-                    _log.LogInformation("Function processed: {Function}", function);
+                    _log.LogInformation(LoggingMessageTemplates.FunctionServiceHandleFunctionHandlingProcessedFunction, function);
                 }
             }
             catch (Exception e)
             {
-                _log.LogError(e, "Unable to handle function: {Function}", function);
+                _log.LogError(e, LoggingMessageTemplates.FunctionServiceHandleFunctionHandlingUnableHandleFunction, function);
             }
         }
         
@@ -94,18 +95,19 @@ public class FunctionService : IFunctionService
         public void Register<T>(Action<T> action) where T : IFunctionPayload
         {
             var func = typeof(T).Name;
-            _log.LogDebug("Registering function: {Function}", func);
+            _log.LogDebug(LoggingMessageTemplates.FunctionServiceRegisterFunctionRegistering, func);
             if (_listeners.ContainsKey(func))
             {
+                // TODO: exception constant
                 throw new Exception($"Function {func} is already handled");
             }
             
             if (_listeners.TryAdd(func, new Tuple<Type, Action<IFunctionPayload>>(typeof(T), payload => action((T)payload)))) {
-                _log.LogDebug("Function registered: {Function}", func);
+                _log.LogDebug(LoggingMessageTemplates.FunctionServiceRegisterFunctionRegistered, func);
             }
             else
             {
-                _log.LogError("Failed to add function to listeners: {Function}", func);
+                _log.LogError(LoggingMessageTemplates.FunctionServiceRegisterAddToListenersFailed, func);
             }
         }
 
@@ -124,7 +126,7 @@ public class FunctionService : IFunctionService
                 throw new Exception("Failed to register Any function");
             }
             
-            _log.LogInformation("Function registered: {Function}", AnyFunction);
+            _log.LogInformation(LoggingMessageTemplates.FunctionServiceRegisterFunctionRegistered, AnyFunction);
         }
 
 

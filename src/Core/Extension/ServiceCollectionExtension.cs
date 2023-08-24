@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Core.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -31,7 +32,7 @@ public static class ServiceCollectionExtensions
         {
             var contextName = typeof(TContext).Name;
             var log = serviceProvider.GetRequiredService<ILogger>();
-            log.LogInformation("Migrating database context: {Context}", contextName);
+            log.LogInformation(LoggingMessageTemplates.ServiceCollectionExtensionsMigratingDatabaseContext, contextName);
 
             while (true)
             {
@@ -43,19 +44,19 @@ public static class ServiceCollectionExtensions
                         .Database
                         .Migrate();
 
-                    log.LogInformation("Database context migration completed: {Context}", contextName);
+                    log.LogInformation(LoggingMessageTemplates.ServiceCollectionExtensionsDatabaseMigrationComplete, contextName);
                     break;
                 }
                 catch (Exception e)
                 {
                     if (e is MySqlException {Number: 1042})
                     {
-                        log.LogInformation("Unable to connect to database, trying again in 5 seconds..");
+                        log.LogInformation(LoggingMessageTemplates.ServiceCollectionExtensionsDatabaseMigrationUnableToConnect);
                         Thread.Sleep(5000);
                         continue;
                     }
                         
-                    log.LogCritical(e, "Failed to migrate database context: {Context}", contextName);
+                    log.LogCritical(e, LoggingMessageTemplates.ServiceCollectionExtensionsDatabaseMigrationFail, contextName);
                     throw;
                 }
             }
