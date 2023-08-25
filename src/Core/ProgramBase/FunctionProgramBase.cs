@@ -1,4 +1,5 @@
 using System;
+using Core.Constants;
 using Core.Handler;
 using Core.Service;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,12 +18,12 @@ public class FunctionProgramBase<T> : ProgramBase<T>, IFunctionProgramBase where
     {
         base.ConfigureServices(services);
         services.AddSingleton<FunctionService>();
-        services.AddSingleton<IFunctionService>(x => x.GetService<FunctionService>() ?? throw new InvalidOperationException("FunctionService not found"));
+        services.AddSingleton<IFunctionService>(x => x.GetService<FunctionService>() ?? throw new InvalidOperationException(ExceptionMessageTemplates.FunctionProgramBaseConfigureServiceFunctionServiceNotFound));
     }
 
     public override void Start()
     {
-        _service = (ServiceProvider ?? throw new InvalidOperationException("ServiceProvider not set")).GetRequiredService<IFunctionService>();
+        _service = (ServiceProvider ?? throw new InvalidOperationException(ExceptionMessageTemplates.FunctionProgramBaseStartServiceProviderNotSet)).GetRequiredService<IFunctionService>();
         Logger.LogInformation("Starting service");
         try
         {

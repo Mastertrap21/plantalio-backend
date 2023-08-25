@@ -1,4 +1,5 @@
 using System;
+using Core.Constants;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -48,7 +49,7 @@ public class ServiceBuilder<TProgram> : ServiceBuilderBase<TProgram>, IServiceBu
         Program.Stop();
         if (!_host.StopAsync().Wait(60000))
         {
-            throw new Exception("Failed to stop service within timeout");
+            throw new Exception(ExceptionMessageTemplates.ServiceBuilderStopServiceWithinTimeoutFailed);
         }
         _host.Dispose();
     }

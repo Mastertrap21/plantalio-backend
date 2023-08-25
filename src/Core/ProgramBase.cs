@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Constants;
 using Core.Extension;
 using Core.Service;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +29,7 @@ public abstract class ProgramBase<T> : IProgramBase where T : ServiceMetadata.Se
         {
             if (_serviceProvider != null)
             {
-                throw new Exception("ServiceProvider was already set");
+                throw new Exception(ExceptionMessageTemplates.ProgramBaseServiceProviderSetAlreadySet);
             }
                 
             _serviceProvider = value;
@@ -39,7 +40,7 @@ public abstract class ProgramBase<T> : IProgramBase where T : ServiceMetadata.Se
             _serviceProvider.RaiseStartedEvent();
         }
     }
-    protected ILogger Logger => (ServiceProvider ?? throw new InvalidOperationException("ServiceProvider not set")).GetRequiredService<ILogger>();
+    protected ILogger Logger => (ServiceProvider ?? throw new InvalidOperationException(ExceptionMessageTemplates.FunctionProgramBaseStartServiceProviderNotSet)).GetRequiredService<ILogger>();
     
     protected ProgramBase()
     {

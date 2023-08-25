@@ -115,7 +115,7 @@ public class FunctionService : IFunctionService
         {
             if (_listeners.ContainsKey(AnyFunction))
             {
-                throw new Exception("Any function is already handled");
+                throw new Exception(ExceptionMessageTemplates.FunctionServiceRegisterAnyHandlerAnyFunctionAlreadyHandled);
             }
 
             var added = _listeners.TryAdd(AnyFunction, new Tuple<Type, Action<IFunctionPayload>>(typeof(AnyFunctionPayload), 
@@ -123,7 +123,7 @@ public class FunctionService : IFunctionService
             
             if (!added)
             {
-                throw new Exception("Failed to register Any function");
+                throw new Exception(ExceptionMessageTemplates.FunctionServiceRegisterAnyHandlerAnyFunctionRegisterFailed);
             }
             
             _log.LogInformation(LoggingMessageTemplates.FunctionServiceRegisterFunctionRegistered, AnyFunction);
