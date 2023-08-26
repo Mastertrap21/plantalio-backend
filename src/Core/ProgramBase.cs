@@ -35,8 +35,8 @@ public abstract class ProgramBase<T> : IProgramBase where T : ServiceMetadata.Se
             _serviceProvider = value;
 
             var version = typeof(IProgramBase).Assembly.GetName().Version ?? new Version();
-            Logger.LogInformation("Running on core version: {Version}", string.Join('.', version.Major, version.Minor, version.Build));
-            Logger.LogInformation("Service metadata values: {@Metadata}", ServiceMetadata.GetAll());
+            Logger.LogInformation(LoggingMessageTemplates.ProgramBaseServiceProviderSetRunningOnCoreVersion, string.Join('.', version.Major, version.Minor, version.Build));
+            Logger.LogInformation(LoggingMessageTemplates.ProgramBaseServiceProviderSetServiceMetadataValues, ServiceMetadata.GetAll());
             _serviceProvider.RaiseStartedEvent();
         }
     }
@@ -49,21 +49,21 @@ public abstract class ProgramBase<T> : IProgramBase where T : ServiceMetadata.Se
     
     public virtual void Start()
     {
-        Logger.LogInformation("Service started (PID: {Pid})", Environment.ProcessId);
+        Logger.LogInformation(LoggingMessageTemplates.ProgramBaseStartServiceStarted, Environment.ProcessId);
         _autoResetEvent.WaitOne();
-        Logger.LogInformation("Stopping service");
+        Logger.LogInformation(LoggingMessageTemplates.ProgramBaseStartServiceStopping);
         try
         {
             if (!Task.Run(Stop).Wait(10_000))
             {
-                Logger.LogError("Timeout occurred when trying to stop service");
+                Logger.LogError(LoggingMessageTemplates.ProgramBaseStartTimeoutOccuredWhenStoppingService);
             }
                 
-            Logger.LogInformation("Service stopped gracefully");
+            Logger.LogInformation(LoggingMessageTemplates.ProgramBaseStartServiceStoppedGracefully);
         }
         catch (Exception e)
         {
-            Logger.LogError(e, "Failed to stop service gracefully");
+            Logger.LogError(e, LoggingMessageTemplates.ProgramBaseStartServiceStopGracefullyFailed);
         }
     }
 

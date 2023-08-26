@@ -24,7 +24,7 @@ public class FunctionProgramBase<T> : ProgramBase<T>, IFunctionProgramBase where
     public override void Start()
     {
         _service = (ServiceProvider ?? throw new InvalidOperationException(ExceptionMessageTemplates.FunctionProgramBaseStartServiceProviderNotSet)).GetRequiredService<IFunctionService>();
-        Logger.LogInformation("Starting service");
+        Logger.LogInformation(LoggingMessageTemplates.FunctionProgramBaseStartServiceStarting);
         try
         {
             foreach (var cmdHandler in ServiceProvider.GetServices<IFunctionHandler>())

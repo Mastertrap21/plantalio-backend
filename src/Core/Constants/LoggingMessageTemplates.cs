@@ -18,4 +18,13 @@ internal static class LoggingMessageTemplates
     public const string FunctionServiceRegisterFunctionRegistering = "Registering function: {Function}";
     public const string FunctionServiceRegisterFunctionRegistered = "Function registered: {Function}";
     public const string FunctionServiceRegisterAddToListenersFailed = "Failed to add function to listeners: {Function}";
+    public const string FunctionProgramBaseStartServiceStarting = "Starting service";
+    public const string ServiceBuilderStartSigtermSignalReceived = "SIGTERM signal received";
+    public const string ProgramBaseServiceProviderSetRunningOnCoreVersion = "Running on core version: {Version}";
+    public const string ProgramBaseServiceProviderSetServiceMetadataValues = "Service metadata values: {@Metadata}";
+    public const string ProgramBaseStartServiceStarted = "Service started (PID: {Pid})";
+    public const string ProgramBaseStartServiceStopping = "Stopping service";
+    public const string ProgramBaseStartTimeoutOccuredWhenStoppingService = "Timeout occurred when trying to stop service";
+    public const string ProgramBaseStartServiceStoppedGracefully = "Service stopped gracefully";
+    public const string ProgramBaseStartServiceStopGracefullyFailed = "Failed to stop service gracefully";
 }

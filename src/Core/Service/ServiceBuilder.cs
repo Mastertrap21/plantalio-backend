@@ -35,7 +35,7 @@ public class ServiceBuilder<TProgram> : ServiceBuilderBase<TProgram>, IServiceBu
             {
                 Program.ServiceProvider
                     .GetService<ILogger>()
-                    ?.LogInformation("SIGTERM signal received");
+                    ?.LogInformation(LoggingMessageTemplates.ServiceBuilderStartSigtermSignalReceived);
 
                 Stop();
             });
