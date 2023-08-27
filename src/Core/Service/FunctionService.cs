@@ -18,11 +18,11 @@ public class FunctionService : IFunctionService
         private readonly IDictionary<string, Tuple<Type, Action<IFunctionPayload>>> _listeners = new ConcurrentDictionary<string, Tuple<Type, Action<IFunctionPayload>>>();
         private readonly IMessageService _messageService;
 
-        public FunctionService(ILogger log, IMessageService messageService)
+        public FunctionService(ILogger log, IMessageService messageService, CancellationTokenSource? cts = null)
         {
             _log = log;
-            _cts = new CancellationTokenSource();
             _messageService = messageService;
+            _cts = cts ?? new CancellationTokenSource();
         }
         
         public void Start(string? serviceName)

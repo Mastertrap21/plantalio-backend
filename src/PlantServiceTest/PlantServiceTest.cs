@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Core;
+using System.Threading;
 using Core.Model;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +19,7 @@ using MySqlConnector;
 using PlantService;
 using PlantService.Entity;
 using PlantService.Model;
+using ExecutionContext = Core.ExecutionContext;
 
 namespace PlantServiceTest;
 
@@ -110,6 +111,18 @@ public class PlantServiceTest : TestCore.TestCoreTest
                 It.IsAny<Action<FunctionMessage>>(), 
                 It.IsAny<bool>()),
             Times.Once());
+    }
+    
+    [Test]
+    public void Test_ServiceStop_Success()
+    {
+        Mock<IMessageService> messageServiceMock = new Mock<IMessageService>();
+        IMessageService messageService = messageServiceMock.Object;
+        Mock<TestableContextTokenSource> cancellationTokenSourceMock = new Mock<TestableContextTokenSource>();
+        TestableContextTokenSource cancellationTokenSource = cancellationTokenSourceMock.Object;
+        TestableFunctionService testableFunctionService = new TestableFunctionService(Logger, messageService, cancellationTokenSource);
+        testableFunctionService.Stop();
+        cancellationTokenSourceMock.Verify(cts => cts.Cancel(), Times.Once());
     }
     
     [Test]
