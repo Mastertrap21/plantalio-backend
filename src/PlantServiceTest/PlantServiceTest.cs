@@ -122,7 +122,7 @@ public class PlantServiceTest : TestCore.TestCoreTest
         TestableContextTokenSource cancellationTokenSource = cancellationTokenSourceMock.Object;
         TestableFunctionService testableFunctionService = new TestableFunctionService(Logger, messageService, cancellationTokenSource);
         testableFunctionService.Stop();
-        //cancellationTokenSourceMock.Verify(cts => cts.Cancel(), Times.Once());
+        cancellationTokenSourceMock.Verify(cts => cts.Cancel(), Times.Once());
     }
     
     [Test]
